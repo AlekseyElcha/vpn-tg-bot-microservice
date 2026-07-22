@@ -1,0 +1,14 @@
+[project]
+name = "vpn-tg-bot-microservice"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiogram>=3.30.0",
+    "aiohttp-socks>=0.11.0",
+    "aioredis>=2.0.1",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.14.2",
+    "redis[asyncio]>=8.0.1",
+]

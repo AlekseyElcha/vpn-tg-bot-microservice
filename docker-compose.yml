@@ -1,0 +1,34 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    restart: always
+    ports:
+      - "5540:5540"
+    volumes:
+      - redisinsight_data:/db
+    networks:
+      - app-network
+
+volumes:
+  redis_data:
+  redisinsight_data:
+
+networks:
+  app-network:
+    driver: bridge
