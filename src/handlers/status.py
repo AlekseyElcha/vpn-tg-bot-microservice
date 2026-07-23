@@ -19,17 +19,17 @@ async def process_balance_menu(callback_query: types.CallbackQuery):
     backend_ping_start = time.perf_counter()
 
     res = await api_client.ping_backend()
-    if res.get("success"):
+    if res:
         backend_ping_finish = time.perf_counter()
 
-        ping_time_ms = (backend_ping_finish - backend_ping_start)
+        ping_time_ms = int((backend_ping_finish - backend_ping_start) * 1000)
 
         if ping_time_ms <= 50:
-            api_status_text = f" 🟢 {ping_time_ms} мс)"
+            api_status_text = f"⚡ {ping_time_ms} мс"
         elif ping_time_ms <= 150:
-            api_status_text = f"🟢 {ping_time_ms} мс)"
+            api_status_text = f"🟢 {ping_time_ms} мс"
         else:
-            api_status_text = f"🔴 {ping_time_ms} мс)"
+            api_status_text = f"🟡 {ping_time_ms} мс"
     else:
         api_status_text = "❌ Недоступен (Time Out)"
 
