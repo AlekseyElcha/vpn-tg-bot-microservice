@@ -1,7 +1,6 @@
 services:
   redis:
     image: redis:7-alpine
-    restart: always
     ports:
       - "6379:6379"
     volumes:
@@ -17,7 +16,6 @@ services:
 
   redisinsight:
     image: redis/redisinsight:latest
-    restart: always
     ports:
       - "5540:5540"
     volumes:
