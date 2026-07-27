@@ -7,6 +7,7 @@ def get_main_menu_keyboard():
     builder.row(types.InlineKeyboardButton(text="Баланс 💳", callback_data="my_balance_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Тарифы 🌟", callback_data="pricelist_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Статус сервиса 📊", callback_data="service_status_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰", callback_data="promocode_btn_click"))
     return builder.as_markup()
 
 
@@ -39,6 +40,11 @@ def get_specific_sub_keyboard(sub_id: str):
 def get_balance_keyboard():
     builder = InlineKeyboardBuilder()
     builder.row(types.InlineKeyboardButton(text="Пополнить баланс", callback_data="add_money_btn_click"))
-    builder.row(types.InlineKeyboardButton(text="⬅️ В главное menu", callback_data="back_to_main"))
+    builder.row(types.InlineKeyboardButton(text="⬅️ В главное меню", callback_data="back_to_main"))
     return builder.as_markup()
 
+
+def get_promocode_keyboard():
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="⬅️ В главное меню", callback_data="back_to_main"))
+    return builder.as_markup()
