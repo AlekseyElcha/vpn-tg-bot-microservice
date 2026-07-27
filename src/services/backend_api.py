@@ -145,6 +145,18 @@ class BackendAPIClient:
             except Exception as e:
                 return None
 
+
+    async def ping_vpn_server(self):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/check/ping-vpn-server"
+
+                response = await client.get(url, timeout=5.0)
+                return response.json()
+            except Exception as e:
+                return None
+
+
     async def create_new_user(self, tg_id: int | float, balance: int):
         async with httpx.AsyncClient() as client:
             try:
@@ -169,6 +181,32 @@ class BackendAPIClient:
                 response = await client.get(url, timeout=5.0)
                 return response
 
+            except Exception as e:
+                return None
+
+
+    async def activate_bonus_code(self,
+                                  code: str,
+                                  tg_id: int
+    ):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/promo/activate"
+                response = await client.get(url,
+                                            params=
+                                            {
+                                                "code": code,
+                                                "tg_id": tg_id
+                                            },
+                                            timeout=5.0)
+
+                if response.status_code == 200:
+                    response = response.json()
+                    if response.get("success") and response.get("msg"):
+                        return response
+                    return None
+                else:
+                    return None
             except Exception as e:
                 return None
 
