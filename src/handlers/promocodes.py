@@ -33,7 +33,7 @@ async def process_promocode_btn_click(
 
 @router.message(PromocodeStates.wait_for_promocode)
 async def process_entered_promocode(message: types.Message, state: FSMContext):
-    user_promocode = message.text.strip()
+    user_promocode = message.text.strip().lower()
 
     response = await api_client.activate_bonus_code(
         code=user_promocode,
@@ -41,8 +41,8 @@ async def process_entered_promocode(message: types.Message, state: FSMContext):
     )
 
     if response and response.get("success") and response.get("msg"):
-        success_message = (f"Ура! Промокод активирован!"
-                           f"{response.get("msg")}")
+        success_message = (f"Ура! Промокод активирован! "
+                           f"{response.get("msg")} 🌟")
         await bot.send_message(message.chat.id,
                                success_message,
                                reply_markup=get_main_menu_keyboard(),
@@ -50,8 +50,13 @@ async def process_entered_promocode(message: types.Message, state: FSMContext):
         )
     else:
         await bot.send_message(message.chat.id,
-                               "Промокод не найден или устарел.",
+                               response.get("msg"),
                                reply_markup=get_main_menu_keyboard()
         )
+    # else:
+    #     await bot.send_message(message.chat.id,
+    #                            "Произошла ошибка!",
+    #                             reply_markup=get_main_menu_keyboard()
+    #     )
 
         await state.clear()
