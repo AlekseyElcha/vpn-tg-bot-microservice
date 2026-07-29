@@ -98,7 +98,7 @@ async def process_add_money_btn_click(
     if not stars_amount:
         return
 
-    payment_url = await create_payment_link(
+    payment_data = await create_payment_link(
         PaymentData(
             user_id=int(callback_query.from_user.id),
             item_id=tariff_name,
@@ -106,11 +106,19 @@ async def process_add_money_btn_click(
         )
     )
 
-    if not payment_url:
+    if not payment_data:
         return
 
+    payment_url = payment_data.get("pay_url")
+
+    payment_text_for_user = (
+        f"Ссылка на пополнение Вашего баланса на {stars_amount}🌟:\n\n\n"
+        f"{payment_url}\n\n"
+        f"Для проведения оплаты нажмите на ссылку и подтвердите операцию."
+    )
+
     await callback_query.message.edit_text(
-        text=f"{payment_url}",
+        text=payment_text_for_user,
         reply_markup=builder.as_markup()
     )
 
