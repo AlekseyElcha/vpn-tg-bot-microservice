@@ -7,7 +7,8 @@ def get_main_menu_keyboard():
     builder.row(types.InlineKeyboardButton(text="Баланс 💳", callback_data="my_balance_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Тарифы 🌟", callback_data="pricelist_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Статус сервиса 📊", callback_data="service_status_btn_click"))
-    builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰", callback_data="promocode_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰 [ТЕСТ]", callback_data="promocode_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Реферальная система [ТЕСТ] 💰", callback_data="referrals_btn_click"))
     return builder.as_markup()
 
 
@@ -45,6 +46,12 @@ def get_balance_keyboard():
 
 
 def get_promocode_keyboard():
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="⬅️ В главное меню", callback_data="back_to_main"))
+    return builder.as_markup()
+
+
+def get_referrals_keyboard():
     builder = InlineKeyboardBuilder()
     builder.row(types.InlineKeyboardButton(text="⬅️ В главное меню", callback_data="back_to_main"))
     return builder.as_markup()
