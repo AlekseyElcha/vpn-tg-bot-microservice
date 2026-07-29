@@ -200,15 +200,18 @@ class BackendAPIClient:
                                             },
                                             timeout=5.0)
 
-                if response.status_code == 200:
-                    response = response.json()
-                    if response.get("success") and response.get("msg"):
-                        return response
-                    return None
-                else:
-                    return None
+                try:
+                    return response.json()
+                except Exception as e:
+                    return {
+                        "success": False,
+                        "msg": "error!"
+                    }
             except Exception as e:
-                return None
+                return {
+                    "success": False,
+                    "msg": e
+                }
 
 
     async def activate_referral(self,
