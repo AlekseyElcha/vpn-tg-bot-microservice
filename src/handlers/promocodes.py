@@ -2,9 +2,8 @@ from aiogram import Router, types
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.utils import chat_action
 
-from src.keyboards.menu import get_promocode_keyboard, get_balance_keyboard
+from src.keyboards.menu import get_promocode_keyboard, get_main_menu_keyboard
 from src.loader import bot
 from src.services.backend_api import api_client
 
@@ -24,6 +23,7 @@ async def process_promocode_btn_click(
     try:
         await callback_query.message.edit_text(
             text=text,
+            reply_markup=get_promocode_keyboard()
         )
         await state.set_state(PromocodeStates.wait_for_promocode)
         await callback_query.answer()
@@ -40,13 +40,18 @@ async def process_entered_promocode(message: types.Message, state: FSMContext):
         tg_id=message.from_user.id
     )
 
-    if response.get("success") and response.get("msg"):
+    if response and response.get("success") and response.get("msg"):
         success_message = (f"Ура! Промокод активирован!"
                            f"{response.get("msg")}")
         await bot.send_message(message.chat.id,
                                success_message,
-                               reply_markup=get_balance_keyboard(),
+                               reply_markup=get_main_menu_keyboard(),
                                message_effect_id="5046509860389126442"
         )
+    else:
+        await bot.send_message(message.chat.id,
+                               "Промокод не найден или устарел.",
+                               reply_markup=get_main_menu_keyboard()
+        )
 
-    await state.clear()
+        await state.clear()
