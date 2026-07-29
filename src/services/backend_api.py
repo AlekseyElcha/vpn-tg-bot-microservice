@@ -211,4 +211,54 @@ class BackendAPIClient:
                 return None
 
 
+    async def activate_referral(self,
+                                referred_tg_id: int,
+                                referral_code: str
+    ):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/referral/activate"
+                response = await client.post(url,
+                                            params=
+                                            {
+                                                "referral_code": referral_code,
+                                                "referred_tg_id": referred_tg_id
+                                            },
+                                            timeout=5.0)
+
+                if response.status_code == 200:
+                    response = response.json()
+                    if response.get("success") and response.get("msg"):
+                        return response
+                    return None
+                else:
+                    return None
+            except Exception as e:
+                return None
+
+
+    async def fetch_referral_link(self,
+                                tg_id: int
+    ):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/referral/link"
+                response = await client.get(url,
+                                            params=
+                                            {
+                                                "tg_id": tg_id
+                                            },
+                                            timeout=5.0)
+
+                if response.status_code == 200:
+                    response = response.json()
+                    if response.get("success") and response.get("referral_link"):
+                        return response
+                    return None
+                else:
+                    return None
+            except Exception as e:
+                return None
+
+
 api_client = BackendAPIClient()
