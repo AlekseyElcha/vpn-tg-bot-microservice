@@ -1,6 +1,10 @@
+import re
+from urllib.parse import urlencode, quote
+
+import requests
 from aiogram import Router, types, F
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from redis.asyncio import Redis
 
 from src.config.settings import Settings, settings
@@ -89,14 +93,6 @@ async def process_view_specific_sub(
 ):
     sub_id = callback_query.data.split("_")[-1]
 
-    builder = InlineKeyboardBuilder()
-    builder.row(
-        types.InlineKeyboardButton(
-            text="⬅️ Назад к подписке",
-            callback_data=f"view_sub_{sub_id}"
-        )
-    )
-
     client_email_from_redis = await redis.get(f"sub:{sub_id}")
 
     if not client_email_from_redis:
@@ -109,12 +105,40 @@ async def process_view_specific_sub(
         email=client_email_from_redis
     )
 
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        types.InlineKeyboardButton(
+            text="Автоматическая настройка (Android / IOS) ", url=subscription_link,
+            style="primary",
+            reply_markup=builder.as_markup()
+        )
+    )
+    builder.row(
+        types.InlineKeyboardButton(
+            text="⬅️ Назад к подписке",
+            callback_data=f"view_sub_{sub_id}"
+        )
+    )
+
     await callback_query.message.edit_text(
-        text=f"Нажмите на текст ниже, чтобы скопировать ссылку:\n\n<code>{subscription_link}</code>",
+        text=f" Ссылка на Вашу подписку (нажмите чтобы скопировать):\n"
+             f"<code>{subscription_link}</code>\n\n"
+             f"<b>🪄 Автоматический импорт подписки\n (только Android 🤖 и IOS 🍎)</b>\n"
+             f" - нажмите на кнопку автонастройки ниже в этом боте\n"
+             f" - после этого на открывшейся странице в самом низу выберите свою операционную систему и VPN-клиент<i>*</i>\n"
+             f" - на этой же странице доступен QR-код для сканирования VPN-клиентом - "
+             f"импорт происходит автоматически без ввода ссылки!\n\n"
+             f"<b>👉 Ручной импорт подписки:</b>\n"
+             f" - скопируйте ссылку <code>{subscription_link}</code>\n"
+             f" - откройте VPN-клиент<i>*</i> на своём устройстве\n"
+             f" - найдите кнопку добаления подписки -> через буфер обмена / ссылка вручную\n"
+             f"<i>* Ссылки на скачивание клиентов: https://t.me/c/4442104099/7</i>",
         reply_markup=builder.as_markup()
     )
 
     await callback_query.answer()
+
+
 
 
 @router.callback_query(F.data.startswith("delete_"))
@@ -136,6 +160,7 @@ async def process_view_specific_sub(
     await api_client.delete_subscription(
         email=client_email_from_redis
     )
+
 
     await callback_query.message.edit_text(
         text=f"Подписка успешно удалена!",
@@ -216,12 +241,13 @@ async def process_new_sub_btn_click_1(
 
     if response and response.get("success") == True:
         await callback_query.message.edit_text(
-            text=f"Новая подписка успешно создана!",
+            text=f"Новая подписка успешно создана!\n\n"
+                 f"Скопировать подписку для настройки клиента Вы можете в меню «Мои подписки».",
             reply_markup=get_main_menu_keyboard()
         )
     else:
         await callback_query.message.edit_text(
-            text=f"произшла ошибка при создании подписки.",
+            text=f"произошла ошибка при создании подписки.",
             reply_markup=get_main_menu_keyboard()
         )
 
