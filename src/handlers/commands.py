@@ -1,6 +1,7 @@
 from aiogram import Router, types
 from aiogram.filters import CommandStart, CommandObject
 from src.keyboards.menu import get_main_menu_keyboard
+from src.loader import bot
 from src.services.backend_api import api_client
 
 router = Router()
@@ -26,6 +27,15 @@ async def process_start_command(
             # )
 
             welcome_message = resp.get("msg")
+
+            if not resp.get("sent_via_broker"):
+                referrer_id = resp.get("referrer_id")
+                await bot.send_message(
+                    chat_id=referrer_id,
+                    text=f"Поздравляем! Вашей реферальной ссылкой успешно воспользовались!\n"
+                       f"На Ваш баланс начислен бонус {1}!\n"
+                       f"Спасибо Вам!"
+                )
 
             await message.answer(
                 text=welcome_message,
