@@ -3,6 +3,19 @@ revision = 3
 requires-python = ">=3.14"
 
 [[package]]
+name = "aio-pika"
+version = "10.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiormq" },
+    { name = "yarl" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8f/7f/01f4ea7fe3490194420bb52e596b9619092ed13c5a230014b02075c3bd77/aio_pika-10.0.1.tar.gz", hash = "sha256:96ec3ef748ca7a25a9d2fa6e511c16c3ffcfa6b1f40ade79b8a5baabba682efd", size = 70882, upload-time = "2026-07-09T13:31:35.709Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/65/3f/329d0e52f994349ff7449c714c242ad65f14586b0e205ca632ac817fda72/aio_pika-10.0.1-py3-none-any.whl", hash = "sha256:12120a3cf8022d2a8bc5dc89e716512a38bf742c24c5562f54764af27eec7edd", size = 56332, upload-time = "2026-07-09T13:31:33.634Z" },
+]
+
+[[package]]
 name = "aiofiles"
 version = "25.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -119,6 +132,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/2e/cf/9eb144a0b05809ffc5d29045c4b51039000ea275bc1268d0351c9e7dfc06/aioredis-2.0.1.tar.gz", hash = "sha256:eaa51aaf993f2d71f54b70527c440437ba65340588afeb786cd87c55c89cd98e", size = 111047, upload-time = "2021-12-27T20:28:17.557Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9b/a9/0da089c3ae7a31cbcd2dcf0214f6f571e1295d292b6139e2bac68ec081d0/aioredis-2.0.1-py3-none-any.whl", hash = "sha256:9ac0d0b3b485d293b8ca1987e6de8658d7dafcca1cddfcd1d506cae8cdebfdd6", size = 71243, upload-time = "2021-12-27T20:28:16.36Z" },
+]
+
+[[package]]
+name = "aiormq"
+version = "7.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pamqp" },
+    { name = "yarl" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/00/16/7e1c2bb887db6cbad191db9a1562e1cf5c0c61ad93f194ddc7baf5661f02/aiormq-7.0.0.tar.gz", hash = "sha256:f524121f1afbb875f50235b2748f81331e3be47542ee600e83c321c4e97ea168", size = 49231, upload-time = "2026-07-09T11:40:51.775Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/53/88/8da3627882f6bd75f780f87e46d0b58da99332c1b71d038db7a127a80648/aiormq-7.0.0-py3-none-any.whl", hash = "sha256:df49bb2282e5374a28507c4c43948e8c8e5321590f2998781c2d90a34e100789", size = 32152, upload-time = "2026-07-09T11:40:50.508Z" },
 ]
 
 [[package]]
@@ -323,6 +349,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pamqp"
+version = "4.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/31/4c/33a0ddaaac7bc42f9a542dbaaee8b580ceca3f89bf5da7c498d1fa97ff9a/pamqp-4.0.1.tar.gz", hash = "sha256:9dd13b828e346622793981f14a5df817fce5de998c746209d6c0154eb8403970", size = 137192, upload-time = "2026-07-06T16:37:51.732Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/71/14/1dfc08b743ba995a38dee0ea09beb46a05c7fe8ac53d729095905f7bf11d/pamqp-4.0.1-py3-none-any.whl", hash = "sha256:a547f45128b06e42ce8d7a739b0cfcc40f2c724770622eaaff4a3f587b1cf7d0", size = 32773, upload-time = "2026-07-06T16:37:50.623Z" },
+]
+
+[[package]]
 name = "propcache"
 version = "0.5.2"
 source = { registry = "https://pypi.org/simple" }
@@ -488,6 +523,7 @@ name = "vpn-tg-bot-microservice"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "aio-pika" },
     { name = "aiogram" },
     { name = "aiohttp-socks" },
     { name = "aioredis" },
@@ -498,6 +534,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "aio-pika", specifier = ">=10.0.1" },
     { name = "aiogram", specifier = ">=3.30.0" },
     { name = "aiohttp-socks", specifier = ">=0.11.0" },
     { name = "aioredis", specifier = ">=2.0.1" },
