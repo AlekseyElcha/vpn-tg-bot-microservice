@@ -112,7 +112,7 @@ async def process_add_money_btn_click(
     payment_url = payment_data.get("pay_url")
 
     payment_text_for_user = (
-        f"Ссылка на пополнение Вашего баланса на {stars_amount}🌟:\n\n\n"
+        f"Ссылка для пополнения Вашего баланса на {stars_amount}🌟:\n\n\n"
         f"{payment_url}\n\n"
         f"Для проведения оплаты нажмите на ссылку и подтвердите операцию."
     )
@@ -166,7 +166,7 @@ async def process_successful_payment(
         )
         await bot.send_message(
             chat_id=int(user_id),
-            text="Произошла ошибка, поэтому мы вернули Ваши средства.",
+            text="Что-то пошло не так, поэтому мы вернули Ваши средства.",
             reply_markup=get_balance_keyboard()
         )
 
