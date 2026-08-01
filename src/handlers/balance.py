@@ -38,7 +38,7 @@ async def process_my_subs_btn_click(
         )
     else:
         await callback_query.message.edit_text(
-            text=f"Ваш баланс: {user_balance}",
+            text=f"<b>Ваш баланс: {user_balance} 🌟</b>",
             reply_markup=get_balance_keyboard()
         )
     await callback_query.answer()
