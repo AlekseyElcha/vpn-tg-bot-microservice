@@ -7,8 +7,16 @@ def get_main_menu_keyboard():
     builder.row(types.InlineKeyboardButton(text="Баланс 💳", callback_data="my_balance_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Тарифы 🌟", callback_data="pricelist_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Статус сервиса 📊", callback_data="service_status_btn_click"))
-    builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰 [ТЕСТ]", callback_data="promocode_btn_click"))
-    builder.row(types.InlineKeyboardButton(text="Реферальная система [ТЕСТ] 💰", callback_data="referrals_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰", callback_data="promocode_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Реферальная система🤝", callback_data="referrals_btn_click"))
+    return builder.as_markup()
+
+
+def get_main_admin_keyboard():
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="Написать пользователю", callback_data="direct_message_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Массовая рассылка", callback_data="mass_message_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Выйти из режима админа", callback_data="back_to_main"))
     return builder.as_markup()
 
 
@@ -32,7 +40,7 @@ def get_subs_list_keyboard(subscriptions: list):
 
 def get_specific_sub_keyboard(sub_id: str):
     builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="Скопировать ссылку на подписку", callback_data=f"copy_link_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="Ссылка на подписку / Автонастройка", callback_data=f"copy_link_{sub_id}"))
     builder.row(types.InlineKeyboardButton(text="Удалить подписку", callback_data=f"delete_{sub_id}"))
     builder.row(types.InlineKeyboardButton(text="⬅️ К списку подписок", callback_data="my_subs_btn_click"))
     return builder.as_markup()

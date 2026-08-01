@@ -24,6 +24,27 @@ class BackendAPIClient:
                 return None
 
 
+    async def fetch_subscription_info(self, email: str):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/clients/info"
+                response = await client.get(
+                    url,
+                    params={"email": email},
+                    timeout=5.0
+                )
+
+                if response.status_code == 200:
+                    response = response.json()
+                    return response
+                else:
+                    print("error")
+                    return None
+            except httpx.HTTPError as e:
+                print(f"Ошибка сети при запросе к бэкенду: {e}")
+                return None
+
+
     async def fetch_subscription_link(self, email: str) -> str:
         async with httpx.AsyncClient() as client:
             try:
