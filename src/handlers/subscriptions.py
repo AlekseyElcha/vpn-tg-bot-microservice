@@ -1,10 +1,9 @@
-import re
-from urllib.parse import urlencode, quote
+from datetime import time
+from time import time as unix_time
 
-import requests
 from aiogram import Router, types, F
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from redis.asyncio import Redis
 
 from src.config.settings import Settings, settings
@@ -157,6 +156,20 @@ async def process_view_specific_sub(
         )
         return
 
+    subscription_info = await api_client.fetch_subscription_info(email=client_email_from_redis)
+
+    if subscription_info:
+        sub_created_at = subscription_info.get("createdAt")
+        time_now = unix_time()
+        if time_now - sub_created_at < 172800:
+            await callback_query.message.edit_text(
+                text=f"<b>Подписку можно удалить не раньше чем через 48 часов после е создания!</b>",
+                reply_markup=get_main_menu_keyboard()
+            )
+            await callback_query.answer()
+            return
+
+
     await api_client.delete_subscription(
         email=client_email_from_redis
     )
@@ -212,7 +225,8 @@ async def process_new_sub_btn_click_1(
     )
 
     await callback_query.message.edit_text(
-        text=f"Вы точно уверены?",
+        text=f"<b>Вы точно уверены?\n\n"
+             f"Подписку можно будет удалить не раньше, чем через 48 часов после её создания!</b>",
         reply_markup=builder.as_markup()
     )
 
