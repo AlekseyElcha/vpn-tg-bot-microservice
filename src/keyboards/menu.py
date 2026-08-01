@@ -12,6 +12,14 @@ def get_main_menu_keyboard():
     return builder.as_markup()
 
 
+def get_main_admin_keyboard():
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="Написать пользователю", callback_data="direct_message_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Массовая рассылка", callback_data="mass_message_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Выйти из режима админа", callback_data="back_to_main"))
+    return builder.as_markup()
+
+
 def get_subs_list_keyboard(subscriptions: list):
     builder = InlineKeyboardBuilder()
 
