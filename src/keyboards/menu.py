@@ -48,8 +48,16 @@ def get_specific_sub_keyboard(sub_id: str):
 
 def get_balance_keyboard():
     builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="Пополнить баланс", callback_data="add_money_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Пополнить Stars", callback_data="add_money_stars_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Пополнить Crypto", callback_data="add_money_crypto_btn_click"))
     builder.row(types.InlineKeyboardButton(text="⬅️ В главное меню", callback_data="back_to_main"))
+    return builder.as_markup()
+
+
+def get_specific_payment_keyboard():
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="Telegram Stars", callback_data="add_stars"))
+    builder.row(types.InlineKeyboardButton(text="Crypto Bot", callback_data="add_crypto_bot"))
     return builder.as_markup()
 
 
