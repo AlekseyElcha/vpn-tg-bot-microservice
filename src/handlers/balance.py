@@ -44,7 +44,7 @@ async def process_my_subs_btn_click(
     await callback_query.answer()
 
 
-@router.callback_query(lambda c: c.data == "add_money_btn_click")
+@router.callback_query(lambda c: c.data == "add_money_stars_btn_click")
 async def process_add_money_btn_click(
         callback_query: types.CallbackQuery
 ):

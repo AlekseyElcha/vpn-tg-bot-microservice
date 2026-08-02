@@ -7,6 +7,7 @@ from .status import router as status_router
 from .promocodes import router as promocode_router
 from .referrals import router as referrals_router
 from .messaging import router as message_router
+from .crypto_payment import router as crypto_router
 
 main_router = Router()
 main_router.include_routers(
@@ -17,5 +18,6 @@ main_router.include_routers(
     status_router,
     promocode_router,
     referrals_router,
-    message_router
+    message_router,
+    crypto_router
 )
