@@ -4,6 +4,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from redis.asyncio import Redis
 
 from pricelist import PaymentsPricesInfo
+from src.config.settings import settings
 from src.keyboards.menu import get_balance_keyboard
 from src.services.backend_api import api_client
 from src.services.payment_link_creator import create_payment_link, PaymentData
@@ -38,7 +39,8 @@ async def process_my_subs_btn_click(
         )
     else:
         await callback_query.message.edit_text(
-            text=f"<b>Ваш баланс: {user_balance} 🌟</b>",
+            text=f"<b>Ваш баланс: {user_balance} 🌟\n\n"
+                 f"Этого хватит еще на ~ {int(user_balance / settings.payment.daily_price)} суток</b>",
             reply_markup=get_balance_keyboard()
         )
     await callback_query.answer()
