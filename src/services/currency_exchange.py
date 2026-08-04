@@ -1,14 +1,15 @@
-crypto_currency_to_stars_ratios = {
-    "TON": 100
-}
+from src.services.backend_api import api_client
 
-def exchange_crypto_to_tg_stars(
+
+async def exchange_crypto_to_tg_stars(
         crypto_name: str,
         crypto_amount: float
 ) -> int | float | None:
-    ratio = crypto_currency_to_stars_ratios.get(crypto_name, -1)
-    if ratio == -1:
+    currency_ratio = await api_client.fetch_crypto_currency_ratio(crypto_name)
+
+    if not currency_ratio:
         return None
 
-    stars_amount = crypto_amount * ratio
+    stars_amount = crypto_amount * currency_ratio
+
     return stars_amount
