@@ -8,7 +8,7 @@ def get_main_menu_keyboard():
     builder.row(types.InlineKeyboardButton(text="Тарифы 🌟", callback_data="pricelist_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Статус сервиса 📊", callback_data="service_status_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰", callback_data="promocode_btn_click"))
-    builder.row(types.InlineKeyboardButton(text="Реферальная система🤝", callback_data="referrals_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Реферальная система 🤝", callback_data="referrals_btn_click"))
     return builder.as_markup()
 
 
@@ -48,8 +48,8 @@ def get_specific_sub_keyboard(sub_id: str):
 
 def get_balance_keyboard():
     builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="Пополнить Stars", callback_data="add_money_stars_btn_click"))
-    builder.row(types.InlineKeyboardButton(text="Пополнить Crypto", callback_data="add_money_crypto_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Пополнить, Telegram Stars 🌟", callback_data="add_money_stars_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="Пополнить, криптовалюта 🪙", callback_data="add_money_crypto_btn_click"))
     builder.row(types.InlineKeyboardButton(text="⬅️ В главное меню", callback_data="back_to_main"))
     return builder.as_markup()
 
