@@ -1,7 +1,6 @@
 from aiogram import Router, types, F
 from aiogram.filters import CommandStart, CommandObject, Command
 
-from src.config.settings import settings
 from src.keyboards.menu import get_main_menu_keyboard, get_main_admin_keyboard
 from src.loader import bot
 from src.services.backend_api import api_client
@@ -13,15 +12,15 @@ async def process_start_command(
         message: types.Message,
         command: CommandObject
 ):
-    service_mode_enabled = True if settings.bot.service_mode_enabled == 1 else False
-
-    if service_mode_enabled:
-        service_msg = settings.bot.service_mode_text
-        bot.send_message(
-            chat_id=message.chat.id,
-            text="<b>Сервис находится на тех.обслуживании!<b>\n" + service_msg
-        )
-        return
+    # service_mode_enabled = True if settings.bot.service_mode_enabled == 1 else False
+    #
+    # if service_mode_enabled:
+    #     service_msg = settings.bot.service_mode_text
+    #     bot.send_message(
+    #         chat_id=message.chat.id,
+    #         text="<b>Сервис находится на тех.обслуживании!<b>\n" + service_msg
+    #     )
+    #     return
 
     ref_code = command.args
     user_tg_id = message.from_user.id
@@ -65,8 +64,8 @@ async def process_start_command(
     if response and response.get("success"):
         welcome_message = (
             "<b>Добро пожаловать в официального бота УруруVPN!</b>\n\n"
-            "Здесь Вы можете управлять своими подписками и пополнять баланс личного кабинета!\n\n"
-            "Выберите нужный раздел по кнопке ниже:"
+            "Это место - Ваш Личный кабинет.\n\n"
+            "Выберите нужный раздел по кнопкам ниже:"
         )
 
         await message.answer(

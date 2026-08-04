@@ -17,7 +17,7 @@ async def get_rmq_connection():
 
 
 async def consume_messages(channel):
-    queue = await channel.declare_queue("notification_tasks", durable=True)
+    queue = await channel.declare_queue("tasks", durable=True)
 
     async with queue.iterator() as queue_iter:
         async for message in queue_iter:

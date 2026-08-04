@@ -2,6 +2,9 @@ from typing import Dict, Any, List
 
 import httpx
 
+from src.redis_client import get_redis
+from src.redis_client.get_redis import get_redis_client
+
 
 class BackendAPIClient:
     def __init__(self, base_url: str = "http://localhost:8000"):
@@ -281,6 +284,67 @@ class BackendAPIClient:
                     return None
                 else:
                     return None
+            except Exception as e:
+                return None
+
+
+    async def fetch_all_user_tg_ids(self):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/users/ids"
+
+                response = await client.get(url, timeout=5.0)
+                return response.json()
+
+            except Exception as e:
+                return None
+
+
+    async def fetch_crypto_currency_ratio(self, currency_code: str):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/currencies/get"
+                response = await client.get(url,
+                                            params=
+                                            {
+                                                "currency_code": currency_code
+                                            },
+                                            timeout=5.0)
+
+                if response.status_code == 200:
+                    response = response.json()
+                    if response.get("success") and response.get("currency_ratio"):
+                        return response.get("currency_ratio")
+                    return None
+                else:
+                    return None
+            except Exception as e:
+                return None
+
+
+    async def fetch_crypto_currency_ratio_v2(self, currency_code: str):
+        # через Redis
+        async with get_redis_client() as redis_client:
+            cache_key = f"ratio:{currency_code}"
+            current_ratio = await redis_client.get(cache_key)
+            if current_ratio:
+                return int(current_ratio)
+            else:
+                return None
+
+
+
+    async def fetch_crypto_currency_ratio_many(self, currency_names: list):
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/currencies/many"
+
+                response = await client.get(url,
+                                             params={"currency_names": currency_names},
+                                             timeout=45.0
+                )
+                return response.json()
+
             except Exception as e:
                 return None
 

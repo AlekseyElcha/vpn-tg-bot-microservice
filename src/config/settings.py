@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.config.bot import BotConfig
+from src.config.crypto import CryptoConfig
 from src.config.payment import PaymentConfig
 from src.config.rabbitmq import RabbitMQConfig
 from src.config.redis import RedisConfig
@@ -13,6 +14,7 @@ class Settings(BaseSettings):
     payment: PaymentConfig
     vpn: VpnConfig
     rabbitmq: RabbitMQConfig
+    crypto: CryptoConfig
 
     model_config = SettingsConfigDict(
         env_file=".env",

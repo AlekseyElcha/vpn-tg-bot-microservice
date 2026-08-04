@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "aio-pika>=10.0.1",
+    "aiocryptopay>=0.4.8",
     "aiogram>=3.30.0",
     "aiohttp-socks>=0.11.0",
     "aioredis>=2.0.1",
