@@ -4,13 +4,14 @@ from aiocryptopay import AioCryptoPay, Networks
 from aiogram import Dispatcher
 from redis.asyncio import Redis
 
+from src.config.settings import settings
 from src.handlers import main_router
 from src.loader import bot, dp
 from src.logs import setup_logging, logger
 from src.rmq_client.consumer import start_consuming
 
 
-CRYPTO_TOKEN = "" # TODO MOVE TO env + config!!!!!
+CRYPTO_TOKEN = settings.crypto.token
 
 _crypto_client = None
 
