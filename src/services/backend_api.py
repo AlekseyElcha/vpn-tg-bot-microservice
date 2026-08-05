@@ -349,4 +349,38 @@ class BackendAPIClient:
                 return None
 
 
+    async def fetch_daily_game_streak(self, tg_id: int) -> int | None:
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/game/streak"
+
+                response = await client.get(url,
+                                             params={"tg_id": tg_id},
+                                             timeout=15.0
+                )
+                streak = response.json()["streak"]
+                return streak
+
+            except Exception as e:
+                return None
+
+
+    async def register_check_in_daily_game(self, tg_id: int) -> str | None:
+        async with httpx.AsyncClient() as client:
+            try:
+                url = f"{self.base_url}/game/check-in"
+
+                response = await client.post(url,
+                                             params={"tg_id": tg_id},
+                                             timeout=15.0
+                )
+                resp_json = response.json()
+                message_response = resp_json.get("msg")
+                return message_response
+
+            except Exception as e:
+                return None
+
+
+
 api_client = BackendAPIClient()
