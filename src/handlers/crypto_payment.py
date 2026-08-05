@@ -95,23 +95,27 @@ async def process_add_money_btn_click(
 async def process_pay_crypto_btn_click(
         callback_query: types.CallbackQuery,
 ):
+    ratio = await api_client.fetch_crypto_currency_ratio(
+        currency_code="TON"
+    )
+
     builder = InlineKeyboardBuilder()
 
     builder.row(
         types.InlineKeyboardButton(
-            text=f"1 TON ~ 100🌟",
+            text=f"1 TON ~ {ratio * 1}🌟",
             callback_data=f"add_crypto_0.1_TON"
         )
     )
     builder.row(
         types.InlineKeyboardButton(
-            text=f"2 TON ~ 200🌟",
+            text=f"2 TON ~ {ratio * 2}🌟",
             callback_data=f"add_crypto_0.2_TON"
         )
     )
     builder.row(
         types.InlineKeyboardButton(
-            text=f"3 TON ~ 300🌟",
+            text=f"3 TON ~ {ratio * 3}🌟",
             callback_data=f"add_crypto_0.3_TON"
         )
     )
