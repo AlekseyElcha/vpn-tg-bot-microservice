@@ -31,12 +31,6 @@ async def process_start_command(
             referral_code=ref_code
         )
         if resp and resp.get("success"):
-            # welcome_message = (
-            #     "<b>Добро пожаловать в официального бота УруруVPN!</b>\n\n"
-            #     "Здесь Вы можете управлять своими подписками и пополнять баланс личного кабинета!\n\n"
-            #     "Выберите нужный раздел по кнопке ниже:"
-            # )
-
             welcome_message = resp.get("msg")
 
             if not resp.get("sent_via_broker"):
@@ -61,7 +55,17 @@ async def process_start_command(
         balance=0
     )
 
-    if response and response.get("success"):
+    if not response:
+        welcome_message = (
+            "<b>На нашей стороне возникла непредвиденная ошибка!\n\n"
+            "Попробуйте зайти позже по /start</b>"
+        )
+        await message.answer(
+            text=welcome_message,
+            reply_markup=get_main_menu_keyboard()
+        )
+
+    elif response and response.get("success"):
         welcome_message = (
             "<b>Добро пожаловать в официального бота УруруVPN!</b>\n\n"
             "Это место - Ваш Личный кабинет.\n\n"

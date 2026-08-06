@@ -17,6 +17,7 @@ async def process_referrals_btn_click(
                 text=f"Произошла ошибка!",
                 reply_markup=get_main_menu_keyboard()
             )
+            await callback_query.answer()
 
         ref_link = ref_link_req_resp.get("referral_link")
 

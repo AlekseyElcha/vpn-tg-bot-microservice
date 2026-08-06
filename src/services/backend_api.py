@@ -11,7 +11,7 @@ class BackendAPIClient:
     def __init__(self, base_url: str = "http://localhost:8000"):
         self.base_url = base_url
         self.headers = {
-            "X-API-Key": settings.api_secret_key
+            "X-API-Key": settings.api_security.api_secret_key
         }
 
     async def fetch_user_subscriptions(self, tg_id: int) -> List[Dict[str, Any]] | None:
@@ -194,6 +194,10 @@ class BackendAPIClient:
                 }
 
                 response = await client.post(url, json=json_data, timeout=5.0)
+
+                if response.status_code not in [200, 201]:
+                    return None
+
                 return response.json()
 
             except Exception as e:

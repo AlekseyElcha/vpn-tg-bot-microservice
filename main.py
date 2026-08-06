@@ -55,6 +55,7 @@ async def main():
     try:
         setup_logging()
         logger.info("Set up logging")
+        logger.info(f"secret key: {settings.api_security.api_secret_key}") # TODO: убрать
         await bot.delete_webhook(drop_pending_updates=True)
 
         await dp.start_polling(bot)
