@@ -7,3 +7,4 @@ class BotConfig(BaseModel):
     test_mode_enabled: bool
     service_mode_enabled: int # 0 / 1
     service_mode_text: str
+    limit_seconds: int
