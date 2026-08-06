@@ -5,14 +5,17 @@ import httpx
 from src.redis_client import get_redis
 from src.redis_client.get_redis import get_redis_client
 
+from src.config.settings import settings
 
 class BackendAPIClient:
     def __init__(self, base_url: str = "http://localhost:8000"):
         self.base_url = base_url
-
+        self.headers = {
+            "X-API-Key": settings.api_secret_key
+        }
 
     async def fetch_user_subscriptions(self, tg_id: int) -> List[Dict[str, Any]] | None:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/users/subs"
                 response = await client.get(url, params={"tg_id": tg_id}, timeout=5.0)
@@ -28,7 +31,7 @@ class BackendAPIClient:
 
 
     async def fetch_subscription_info(self, email: str):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/clients/info"
                 response = await client.get(
@@ -49,7 +52,7 @@ class BackendAPIClient:
 
 
     async def fetch_subscription_link(self, email: str) -> str:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/clients/link"
                 response = await client.get(url, params={"email": email}, timeout=5.0)
@@ -68,7 +71,7 @@ class BackendAPIClient:
 
 
     async def delete_subscription(self, email: str) -> Dict[str, str]:
-        async with (httpx.AsyncClient() as client):
+        async with (httpx.AsyncClient(headers=self.headers) as client):
             try:
                 url = f"{self.base_url}/clients/delete/{email}"
                 response = await client.post(url, params={"keep_traffic": 0}, timeout=5.0)
@@ -90,7 +93,7 @@ class BackendAPIClient:
 
 
     async def fetch_user_balance(self, tg_id: int) -> float| None:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/users/balance"
                 response = await client.get(url, params={"tg_id": tg_id}, timeout=5.0)
@@ -110,7 +113,7 @@ class BackendAPIClient:
                                  item_id: str,
                                  payment_amount: float
     ) -> Dict[str, Any] | None:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/payment/pay"
 
@@ -137,7 +140,7 @@ class BackendAPIClient:
                                       inbounds: list[int]
 
     ):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/clients/add"
                 json_data = {
@@ -160,7 +163,7 @@ class BackendAPIClient:
 
 
     async def fetch_server_status(self):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/server/status"
 
@@ -171,7 +174,7 @@ class BackendAPIClient:
 
 
     async def ping_vpn_server(self):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/check/ping-vpn-server"
 
@@ -182,7 +185,7 @@ class BackendAPIClient:
 
 
     async def create_new_user(self, tg_id: int | float, balance: int):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/users/add"
                 json_data = {
@@ -198,7 +201,7 @@ class BackendAPIClient:
 
 
     async def ping_backend(self):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/server/status"
 
@@ -213,7 +216,7 @@ class BackendAPIClient:
                                   code: str,
                                   tg_id: int
     ):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/promo/activate"
                 response = await client.get(url,
@@ -242,7 +245,7 @@ class BackendAPIClient:
                                 referred_tg_id: int,
                                 referral_code: str
     ):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/referral/activate"
                 response = await client.post(url,
@@ -267,7 +270,7 @@ class BackendAPIClient:
     async def fetch_referral_link(self,
                                 tg_id: int
     ):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/referral/link"
                 response = await client.get(url,
@@ -289,7 +292,7 @@ class BackendAPIClient:
 
 
     async def fetch_all_user_tg_ids(self):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/users/ids"
 
@@ -301,7 +304,7 @@ class BackendAPIClient:
 
 
     async def fetch_crypto_currency_ratio(self, currency_code: str):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/currencies/get"
                 response = await client.get(url,
@@ -335,7 +338,7 @@ class BackendAPIClient:
 
 
     async def fetch_crypto_currency_ratio_many(self, currency_names: list):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/currencies/many"
 
@@ -350,7 +353,7 @@ class BackendAPIClient:
 
 
     async def fetch_daily_game_streak(self, tg_id: int) -> int | None:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/game/streak"
 
@@ -366,7 +369,7 @@ class BackendAPIClient:
 
 
     async def register_check_in_daily_game(self, tg_id: int) -> str | None:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 url = f"{self.base_url}/game/check-in"
 
