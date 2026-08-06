@@ -47,8 +47,8 @@ async def main():
     dp.include_router(main_router)
     redis_pool = Redis.from_url("redis://localhost:6379", decode_responses=True)
     crypto_client = AioCryptoPay(token=CRYPTO_TOKEN, network=Networks.TEST_NET)
-    dp.message.middleware(ThrottlingMiddleware(redis=redis_pool, rate_limit=5))
-    dp.callback_query.middleware(ThrottlingMiddleware(redis=redis_pool, rate_limit=5))
+    dp.message.middleware(ThrottlingMiddleware(redis=redis_pool, rate_limit=settings.bot.limit_seconds))
+    dp.callback_query.middleware(ThrottlingMiddleware(redis=redis_pool, rate_limit=settings.bot.limit_seconds))
     dp["redis"] = redis_pool
     dp["crypto"] = crypto_client
     dp.startup.register(on_startup)
@@ -57,7 +57,6 @@ async def main():
     try:
         setup_logging()
         logger.info("Set up logging")
-        logger.info(f"secret key: {settings.api_security.api_secret_key}") # TODO: убрать
         await bot.delete_webhook(drop_pending_updates=True)
 
         await dp.start_polling(bot)
