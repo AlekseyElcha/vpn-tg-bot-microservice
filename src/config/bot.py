@@ -8,3 +8,4 @@ class BotConfig(BaseModel):
     service_mode_enabled: int # 0 / 1
     service_mode_text: str
     limit_seconds: int
+    admin_ids: list[int] = []

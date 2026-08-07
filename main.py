@@ -68,5 +68,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    print("Started TG-bot")
+    logger.info("Started TG-bot")
     asyncio.run(main())
