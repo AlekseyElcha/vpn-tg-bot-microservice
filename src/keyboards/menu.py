@@ -71,10 +71,10 @@ def get_pc_os_keyboard(sub_id: str):
     builder.row(types.InlineKeyboardButton(text="⬅️ Назад", callback_data=f"instructions_{sub_id}"))
     return builder.as_markup()
 
-def get_os_instruction_keyboard(sub_id: str, platform: str, web_link_url: str = None, btn_text: str = None):
+def get_os_instruction_keyboard(sub_id: str, platform: str, web_link_url: str = None):
     builder = InlineKeyboardBuilder()
-    if web_link_url and btn_text:
-        builder.row(types.InlineKeyboardButton(text=btn_text, url=web_link_url))
+    if web_link_url:
+        builder.row(types.InlineKeyboardButton(text="🚀 Перейти к настройке", url=web_link_url))
     back_btn_callback = f"plat_mobile_{sub_id}" if platform in ["ios", "android"] else f"plat_pc_{sub_id}"
     builder.row(types.InlineKeyboardButton(text="⬅️ Назад к выбору ОС", callback_data=back_btn_callback))
     return builder.as_markup()
