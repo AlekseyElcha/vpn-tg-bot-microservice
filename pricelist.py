@@ -1,7 +1,5 @@
+# legacy, planned for removal
 class PaymentsPricesInfo:
-     # TODO: в будущем брать из окружение -> настройки -> сюда.
-     #  а лучше настроить задачу автообновления ценника с сервера раз в n время
-
     payment_tariffs_dict: dict[str, int] = {
         "Оплата услуг - 60 stars": 1,
         "Оплата услуг - 120 stars": 2,
