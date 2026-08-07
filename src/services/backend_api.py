@@ -4,10 +4,11 @@ import httpx
 from src.redis_client.get_redis import get_redis_client
 from src.config.settings import settings
 from src.logs import logger
+import os
 
 class BackendAPIClient:
-    def __init__(self, base_url: str = "http://localhost:8000"):
-        self.base_url = base_url
+    def __init__(self, base_url: str = None):
+        self.base_url = base_url or os.getenv("BACKEND_URL", "http://localhost:8000")
         self.headers = {
             "X-API-Key": settings.api_security.api_secret_key
         }
