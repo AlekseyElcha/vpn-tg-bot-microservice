@@ -367,7 +367,7 @@
 #         await callback_query.message.edit_reply_markup(reply_markup=None)
 #         await callback_query.answer("🎉 Оплата прошла успешно!", show_alert=True)
 #
-#         if invoice.asset == "123": #TODO убрать!!!
+#         if invoice.asset == "123":
 #             return
 #
 #         payment_amount = await exchange_crypto_to_tg_stars(
