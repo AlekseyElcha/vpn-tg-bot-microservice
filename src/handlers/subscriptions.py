@@ -47,19 +47,22 @@ async def process_my_subs_btn_click(
         for ind, sub in enumerate(subscriptions_info, start=1):
             expiration_time_unix = sub.get("expiry_time", "")
             current_time_unix = int(unix_time())
+            
+            is_expired = False
             if expiration_time_unix and expiration_time_unix != 0:
                 if expiration_time_unix < current_time_unix:
-                    hr_time_msk = "Подписка истекла!"
+                    is_expired = True
+                    hr_time_msk = "Истекла"
                 else:
                     hr_time_msk = convert_unix_time_to_hr_time(unix_time=expiration_time_unix)
             else:
                 hr_time_msk = "ꝏ"
 
-            status = "работает" if sub.get("enable") else "отключена"
+            status = "работает 🟢" if sub.get("enable") else "отключена 🔴"
             user_subs_info += f"🔑 <code>{sub.get('email')}</code>\n"
 
-            if hr_time_msk == "Подписка истекла!":
-                user_subs_info += f" └── ❗{hr_time_msk} Пополните баланс!\n\n"
+            if is_expired:
+                user_subs_info += f" └── ❗ Подписка истекла! Пополните баланс 💸\n\n"
             else:
                 user_subs_info += f" └── Статус: {status} | Активна до: {hr_time_msk} по МСК\n\n"
 

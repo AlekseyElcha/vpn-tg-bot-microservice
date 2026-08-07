@@ -192,22 +192,24 @@ async def process_successful_payment(
         )
         await bot.send_message(
             chat_id=int(user_id),
-            text="Что-то пошло не так, поэтому мы вернули Ваши средства.",
+            text="❌ Что-то пошло не так на сервере, поэтому мы вернули Ваши средства.",
             reply_markup=get_balance_keyboard()
         )
+        return
 
     server_task_successful = server_response.get("success")
 
-    if not server_task_successful or server_task_successful == False:
+    if not server_task_successful:
         await bot.refund_star_payment(
             user_id=int(user_id),
             telegram_payment_charge_id=payment.telegram_payment_charge_id,
         )
         await bot.send_message(
             chat_id=int(user_id),
-            text="Произошла ошибка, поэтому мы вернули Ваши средства.",
+            text="❌ Произошла ошибка при выдаче подписки, поэтому мы вернули Ваши средства.",
             reply_markup=get_balance_keyboard()
         )
+        return
 
     payment_test_mode_enabled = True
     if payment_test_mode_enabled:
@@ -268,16 +270,20 @@ async def check_payment_status(
 
         server_task_successful = server_response.get("success")
 
-        if not server_task_successful or server_task_successful == False:
-            await crypto.transfer(
-                user_id=callback_query.from_user.id,
-                amount=invoice.amount,
-                asset=invoice.paid_asset,
-                spend_id=f"refund_inv_{invoice.invoice_id}"
-            )
+        if not server_task_successful:
+            try:
+                await crypto.transfer(
+                    user_id=callback_query.from_user.id,
+                    amount=invoice.amount,
+                    asset=invoice.paid_asset,
+                    spend_id=f"refund_inv_{invoice.invoice_id}"
+                )
+            except Exception as e:
+                logger.error(f"Не удалось выполнить автовозврат крипты: {e}")
+                
             await bot.send_message(
                 chat_id=int(callback_query.from_user.id),
-                text="Произошла ошибка, поэтому мы вернули Ваши средства.",
+                text="❌ Произошла ошибка при выдаче подписки, поэтому мы оформили возврат средств.",
                 reply_markup=get_balance_keyboard()
             )
         else:
