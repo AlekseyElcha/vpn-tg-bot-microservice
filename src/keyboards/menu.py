@@ -13,6 +13,7 @@ def get_main_menu_keyboard():
     builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰", callback_data="promocode_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Реферальная система 🤝", callback_data="referrals_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Ежедневный челлендж 🎯", callback_data="daily_challenge_btn_click"))
+    builder.row(types.InlineKeyboardButton(text="💬 Поддержка", callback_data="support_btn_click"))
     return builder.as_markup()
 
 

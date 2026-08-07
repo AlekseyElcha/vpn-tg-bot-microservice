@@ -9,3 +9,4 @@ class BotConfig(BaseModel):
     service_mode_text: str
     limit_seconds: int
     admin_ids: list[int] = []
+    support_group_id: int | None = None
