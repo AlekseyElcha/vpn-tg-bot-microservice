@@ -1,4 +1,3 @@
-from datetime import time
 from time import time as unix_time
 
 from aiogram import Router, types, F
@@ -6,10 +5,11 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from redis.asyncio import Redis
 
-from src.config.settings import Settings, settings
+from src.config.settings import settings
 from src.keyboards.menu import get_subs_list_keyboard, get_specific_sub_keyboard, get_main_menu_keyboard
 from src.services.backend_api import api_client
 from src.services.naming import create_subscription_name_by_tg_id
+from src.services.time_converter import convert_unix_time_to_hr_time
 
 router = Router()
 
@@ -45,9 +45,25 @@ async def process_my_subs_btn_click(
 
         user_subs_info = "<b>📋 Список ваших VPN-подписок:</b>\n\n"
         for ind, sub in enumerate(subscriptions_info, start=1):
-            status = "Работает" if sub.get("enable") else "Отключен"
-            user_subs_info += f"{ind}. 🔑 <code>{sub.get('email')}</code>\n"
-            user_subs_info += f"   └── Статус: {status} | Лимит: {"ꝏ" if sub.get('total_gb') == 0 else sub.get('total_gb')} GB\n\n"
+            expiration_time_unix = sub.get("expiry_time", "")
+            current_time_unix = int(unix_time())
+            if expiration_time_unix and expiration_time_unix != 0:
+                if expiration_time_unix < current_time_unix:
+                    hr_time_msk = "Подписка истекла!"
+                else:
+                    hr_time_msk = convert_unix_time_to_hr_time(unix_time=expiration_time_unix)
+            else:
+                hr_time_msk = "ꝏ"
+
+            status = "работает" if sub.get("enable") else "отключена"
+            user_subs_info += f"🔑 <code>{sub.get('email')}</code>\n"
+
+            if hr_time_msk == "Подписка истекла!":
+                user_subs_info += f" └── ❗{hr_time_msk} Пополните баланс!\n\n"
+            else:
+                user_subs_info += f" └── Статус: {status} | Активна до: {hr_time_msk} по МСК\n\n"
+
+            user_subs_info += f"<i>Рекомендуем регулярно проверять подписки и баланс</i>"
 
             sub_id = sub.get("id")
             email = sub.get("email")
@@ -163,7 +179,7 @@ async def process_view_specific_sub(
         time_now = unix_time()
         if time_now - sub_created_at < 172800:
             await callback_query.message.edit_text(
-                text=f"<b>Подписку можно удалить не раньше чем через 48 часов после е создания!</b>",
+                text=f"<b>Подписку можно удалить не раньше чем через 48 часов после её создания!</b>",
                 reply_markup=get_main_menu_keyboard()
             )
             await callback_query.answer()
@@ -205,7 +221,7 @@ async def process_new_sub_btn_click_1(
     if user_balance <= 0:
         await callback_query.message.edit_text(
             text=f"На данный момент Ваш баланс: <b>{user_balance}</b>.\n\n"
-                 f"<b>Для приобретения подписки баланс должен быть больше 0.</b>",
+                 f"<b>Для оформления подписки баланс должен быть больше 0.</b>",
             reply_markup=get_main_menu_keyboard()
         )
         return
@@ -246,7 +262,7 @@ async def process_new_sub_btn_click_1(
     response = await api_client.create_subscription(
         email=subscription_name,
         total_gb=0,
-        expiry_time=0,
+        expiry_time=0, # заменяется на бекенде, значение здесь ни на что не влияет
         tg_id=tg_id,
         limit_ip=settings.vpn.limit_ip,
         enable=True,
@@ -259,9 +275,15 @@ async def process_new_sub_btn_click_1(
                  f"Скопировать подписку для настройки клиента Вы можете в меню «Мои подписки».",
             reply_markup=get_main_menu_keyboard()
         )
+    elif response and response.get("success") == False and response.get("msg"):
+        await callback_query.message.edit_text(
+            text=response.get("msg"),
+            reply_markup=get_main_menu_keyboard()
+        )
+
     else:
         await callback_query.message.edit_text(
-            text=f"произошла ошибка при создании подписки.",
+            text=f"Произошла непредвиденная ошибка при создании подписки.",
             reply_markup=get_main_menu_keyboard()
         )
 

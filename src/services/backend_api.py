@@ -111,7 +111,8 @@ class BackendAPIClient:
     async def fetch_server_post_payment_task_result(self,
                                  user_id: int,
                                  item_id: str,
-                                 payment_amount: float
+                                 payment_amount: float,
+                                 payment_type: str
     ) -> Dict[str, Any] | None:
         async with httpx.AsyncClient(headers=self.headers) as client:
             try:
@@ -120,7 +121,8 @@ class BackendAPIClient:
                 json_data = {
                     "user_id": user_id,
                     "item_id": item_id,
-                    "payment_amount": payment_amount
+                    "payment_amount": payment_amount,
+                    "payment_type": payment_type,
                 }
 
                 response = await client.post(url, json=json_data, timeout=5.0)

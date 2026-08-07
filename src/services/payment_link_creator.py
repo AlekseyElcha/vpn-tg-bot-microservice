@@ -8,15 +8,15 @@ class PaymentData(BaseModel):
     user_id: int
     item_id: str
     price_stars: int | float
-
+    payload: str
 
 
 async def create_payment_link(payment_data: PaymentData):
     try:
         invoice_link = await bot.create_invoice_link(
-            title="Оплата услуг УруруVPN",
+            title="Оплата услуг",
             description=f"Оплата товара {payment_data.item_id}",
-            payload=f"pay:{payment_data.user_id}:{payment_data.item_id}",
+            payload=payment_data.payload,
             provider_token="",
             currency="XTR",
             prices=[

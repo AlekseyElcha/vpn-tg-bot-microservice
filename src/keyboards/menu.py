@@ -1,6 +1,9 @@
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from src.config.settings import settings
+
+
 def get_main_menu_keyboard():
     builder = InlineKeyboardBuilder()
     builder.row(types.InlineKeyboardButton(text="Мои подписки 📋", callback_data="my_subs_btn_click"))
@@ -49,17 +52,19 @@ def get_specific_sub_keyboard(sub_id: str):
 
 def get_balance_keyboard():
     builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="Пополнить, Telegram Stars 🌟", callback_data="add_money_stars_btn_click"))
-    builder.row(types.InlineKeyboardButton(text="Пополнить, криптовалюта 🪙", callback_data="add_money_crypto_btn_click"))
+    builder.row(types.InlineKeyboardButton(text=f"1 месяц - {settings.payment.price_1_month_rub} RUB 🇷🇺", callback_data="add_money_1_month_click"))
+    builder.row(types.InlineKeyboardButton(text=f"3 месяца - {settings.payment.price_3_month_rub} RUB 🇷🇺", callback_data="add_money_3_month_click"))
+    builder.row(types.InlineKeyboardButton(text=f"6 месяцев - {settings.payment.price_6_month_rub} RUB 🇷🇺", callback_data="add_money_6_month_click"))
+
     builder.row(types.InlineKeyboardButton(text="⬅️ В главное меню", callback_data="back_to_main"))
     return builder.as_markup()
 
 
-def get_specific_payment_keyboard():
-    builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="Telegram Stars", callback_data="add_stars"))
-    builder.row(types.InlineKeyboardButton(text="Crypto Bot", callback_data="add_crypto_bot"))
-    return builder.as_markup()
+# def get_specific_payment_keyboard():
+#     builder = InlineKeyboardBuilder()
+#     builder.row(types.InlineKeyboardButton(text="Telegram Stars", callback_data="add_stars"))
+#     builder.row(types.InlineKeyboardButton(text="Crypto Bot", callback_data="add_crypto_bot"))
+#     return builder.as_markup()
 
 
 def get_promocode_keyboard():
