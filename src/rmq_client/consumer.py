@@ -30,9 +30,9 @@ async def consume_messages(channel):
                     if action:
                         await action(payload)
                     else:
-                        print(f"Неизвестный тип задачи: {task_type}")
+                        logger.warning(f"Неизвестный тип задачи: {task_type}")
                 except Exception as e:
-                    print(f"Ошибка обработки сообщения: {e}")
+                    logger.error(f"Ошибка обработки сообщения: {e}")
 
 
 async def start_consuming():

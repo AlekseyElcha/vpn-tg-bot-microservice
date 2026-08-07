@@ -228,7 +228,7 @@ async def process_successful_payment(
                 message_effect_id="5046509860389126442"
             )
         except Exception as e:
-            print(f"Не удалось выполнить автовозврат: {e}")
+            logger.error(f"Не удалось выполнить автовозврат: {e}")
     else:
         await bot.send_message(
             chat_id=int(user_id),

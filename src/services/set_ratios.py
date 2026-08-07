@@ -1,18 +1,18 @@
 from src.redis_client.get_redis import get_redis_client
 from src.services.backend_api import api_client
-
+from src.logs import logger
 
 async def set_currency_ratios(
         rmq_payload: dict
 ) -> bool:
-    print("Начато обновление...")
+    logger.info("Начато обновление...")
     error_currencies = []
 
     async with get_redis_client() as redis_cl:
         currency_dict = rmq_payload.get("data", {})
         for code, ratio in currency_dict.items():
             redis_key = f"ratio:{code}"
-            print(redis_key)
+            logger.debug(redis_key)
 
             if ratio == -1:
                 error_currencies.append(code)
@@ -41,5 +41,5 @@ async def set_currency_ratios(
                 current_ratio = await redis_cl.get(redis_key)
                 await redis_cl.delete(redis_key)
                 await redis_cl.set(redis_key, current_ratio, ex=3800)
-    print("Обноление завершено!")
+    logger.info("Обноление завершено!")
     return True

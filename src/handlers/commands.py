@@ -4,6 +4,7 @@ from aiogram.filters import CommandStart, CommandObject, Command
 from src.keyboards.menu import get_main_menu_keyboard, get_main_admin_keyboard
 from src.loader import bot
 from src.services.backend_api import api_client
+from src.config.settings import settings
 
 router = Router()
 
@@ -82,8 +83,7 @@ async def process_start_command(
             reply_markup=get_main_menu_keyboard()
         )
 
-ADMIN_IDS = [5696529637]
-@router.message(Command("admin"), F.from_user.id.in_(ADMIN_IDS))
+@router.message(Command("admin"), F.from_user.id.in_(settings.bot.admin_ids))
 async def process_admin_command(message: types.Message):
     await message.answer(
         text="<b>Выберите действие:</b>",
