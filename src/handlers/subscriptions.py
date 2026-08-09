@@ -156,7 +156,68 @@ async def process_view_specific_sub(
 
     await callback_query.answer()
 
+@router.callback_query(F.data.startswith("instructions_"))
+async def process_instructions_main(callback_query: types.CallbackQuery):
+    sub_id = callback_query.data.split("_")[-1]
+    from src.keyboards.menu import get_platforms_keyboard
+    await callback_query.message.edit_text(
+        text=f"Выберите платформу для настройки VPN:",
+        reply_markup=get_platforms_keyboard(sub_id)
+    )
+    await callback_query.answer()
 
+@router.callback_query(F.data.startswith("plat_mobile_"))
+async def process_instructions_mobile(callback_query: types.CallbackQuery):
+    sub_id = callback_query.data.split("_")[-1]
+    from src.keyboards.menu import get_mobile_os_keyboard
+    await callback_query.message.edit_text(
+        text=f"Выберите вашу мобильную ОС:",
+        reply_markup=get_mobile_os_keyboard(sub_id)
+    )
+    await callback_query.answer()
+
+@router.callback_query(F.data.startswith("plat_pc_"))
+async def process_instructions_pc(callback_query: types.CallbackQuery):
+    sub_id = callback_query.data.split("_")[-1]
+    from src.keyboards.menu import get_pc_os_keyboard
+    await callback_query.message.edit_text(
+        text=f"Выберите ОС вашего компьютера:",
+        reply_markup=get_pc_os_keyboard(sub_id)
+    )
+    await callback_query.answer()
+
+@router.callback_query(F.data.startswith("os_"))
+async def process_os_instructions(callback_query: types.CallbackQuery, redis: Redis):
+    parts = callback_query.data.split("_")
+    os_type = parts[1]
+    sub_id = parts[2]
+    
+    client_email_from_redis = await redis.get(f"sub:{sub_id}")
+    if not client_email_from_redis:
+        await callback_query.message.answer("Произошла ошибка! Вернитесь в меню подписок.")
+        return
+
+    subscription_link = await api_client.fetch_subscription_link(email=client_email_from_redis)
+    
+    from src.keyboards.menu import get_os_instruction_keyboard
+    import urllib.parse
+    
+    encoded_link = urllib.parse.quote(subscription_link)
+    base_redirect_url = "https://cdn-static-x9a.online/connect"
+    web_link = f"{base_redirect_url}?os={os_type}&link={encoded_link}"
+    
+    instructions_text = (
+        f"Ваша персональная ссылка (нажмите, чтобы скопировать):\n"
+        f"<code>{subscription_link}</code>\n\n"
+        f"Отлично! Нажмите кнопку ниже, чтобы перейти в <b>Хаб Приложений</b>. "
+        f"Там вы сможете в 1 клик настроить VPN в вашем любимом приложении или скачать новое!"
+    )
+        
+    await callback_query.message.edit_text(
+        text=instructions_text,
+        reply_markup=get_os_instruction_keyboard(sub_id, platform=os_type, web_link_url=web_link)
+    )
+    await callback_query.answer()
 
 
 @router.callback_query(F.data.startswith("delete_"))

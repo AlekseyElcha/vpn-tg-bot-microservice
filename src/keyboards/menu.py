@@ -44,9 +44,39 @@ def get_subs_list_keyboard(subscriptions: list):
 
 def get_specific_sub_keyboard(sub_id: str):
     builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="Ссылка на подписку / Автонастройка", callback_data=f"copy_link_{sub_id}"))
-    builder.row(types.InlineKeyboardButton(text="Удалить подписку", callback_data=f"delete_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="🔗 Ссылка на подписку", callback_data=f"copy_link_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="📖 Более легкое подключение (Инструкции)", callback_data=f"instructions_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="❌ Удалить подписку", callback_data=f"delete_{sub_id}"))
     builder.row(types.InlineKeyboardButton(text="⬅️ К списку подписок", callback_data="my_subs_btn_click"))
+    return builder.as_markup()
+
+def get_platforms_keyboard(sub_id: str):
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="📱 Мобильные устройства", callback_data=f"plat_mobile_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="💻 Компьютеры (ПК)", callback_data=f"plat_pc_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="⬅️ Назад к подписке", callback_data=f"view_sub_{sub_id}"))
+    return builder.as_markup()
+
+def get_mobile_os_keyboard(sub_id: str):
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="🍏 iOS (iPhone, iPad)", callback_data=f"os_ios_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="🤖 Android", callback_data=f"os_android_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="⬅️ Назад", callback_data=f"instructions_{sub_id}"))
+    return builder.as_markup()
+
+def get_pc_os_keyboard(sub_id: str):
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="🪟 Windows", callback_data=f"os_windows_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="🍏 macOS", callback_data=f"os_mac_{sub_id}"))
+    builder.row(types.InlineKeyboardButton(text="⬅️ Назад", callback_data=f"instructions_{sub_id}"))
+    return builder.as_markup()
+
+def get_os_instruction_keyboard(sub_id: str, platform: str, web_link_url: str = None):
+    builder = InlineKeyboardBuilder()
+    if web_link_url:
+        builder.row(types.InlineKeyboardButton(text="🚀 Перейти к настройке", url=web_link_url))
+    back_btn_callback = f"plat_mobile_{sub_id}" if platform in ["ios", "android"] else f"plat_pc_{sub_id}"
+    builder.row(types.InlineKeyboardButton(text="⬅️ Назад к выбору ОС", callback_data=back_btn_callback))
     return builder.as_markup()
 
 
