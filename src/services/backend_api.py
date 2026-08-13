@@ -79,18 +79,16 @@ class BackendAPIClient:
         limit_ip: int, enable: bool, inbounds: list[int], is_trial: bool
     ) -> Optional[Dict[str, Any]]:
         json_data = {
-            "new_client": {
-                "client": {
-                    "email": email,
-                    "total_gb": total_gb,
-                    "expiry_time": expiry_time,
-                    "tg_id": tg_id,
-                    "limit_ip": limit_ip,
-                    "enable": enable
-                },
-                "inbound_ids": inbounds
+            "client": {
+                "email": email,
+                "total_gb": int(total_gb),  # Схема ожидает int, лучше привести тип принудительно
+                "expiry_time": expiry_time,
+                "tg_id": tg_id,
+                "limit_ip": limit_ip,
+                "enable": enable
             },
-            "is_trial": is_trial
+            "is_trial": is_trial,
+            "inbound_ids": inbounds
         }
         return await self._make_request("POST", "/clients/add", json=json_data)
 
