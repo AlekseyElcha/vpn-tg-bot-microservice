@@ -15,7 +15,7 @@ async def process_referrals_btn_click(
         if not ref_link_req_resp or not ref_link_req_resp.get("success"):
             await callback_query.message.edit_text(
                 text=f"Произошла ошибка!",
-                reply_markup=get_main_menu_keyboard()
+                reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
             )
             await callback_query.answer()
 
@@ -23,14 +23,13 @@ async def process_referrals_btn_click(
 
         instruction_with_link = (
             f"<b>Представляем реферальную систему УруруVPN!</b>\n\n"
-            f"Делитесь своей ссылкой, Вы и Ваш друг получите бонусы!\n\n"
-            f"Друг получит бонусный баланс, а Вы будете получать процент от пополений друга на Ваш аккаунт!\n\n"
+            f"Делитесь своей ссылкой и получайте бонусы!\n\n"
             f"Ваша ссылка: <code>{ref_link}</code>"
         )
 
         await callback_query.message.edit_text(
             text=instruction_with_link,
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
 
         await callback_query.answer()

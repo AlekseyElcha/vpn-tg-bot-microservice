@@ -45,13 +45,13 @@ async def process_entered_promocode(message: types.Message, state: FSMContext):
                            f"{response.get("msg")} 🌟")
         await bot.send_message(message.chat.id,
                                success_message,
-                               reply_markup=get_main_menu_keyboard(),
+                               reply_markup=await get_main_menu_keyboard(message.from_user.id),
                                message_effect_id="5046509860389126442"
         )
     else:
         await bot.send_message(message.chat.id,
                                response.get("msg"),
-                               reply_markup=get_main_menu_keyboard()
+                               reply_markup=await get_main_menu_keyboard(message.from_user.id)
         )
     # else:
     #     await bot.send_message(message.chat.id,

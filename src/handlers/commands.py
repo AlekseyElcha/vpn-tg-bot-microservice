@@ -39,13 +39,13 @@ async def process_start_command(
                 await bot.send_message(
                     chat_id=referrer_id,
                     text=f"Поздравляем! Вашей реферальной ссылкой успешно воспользовались!\n"
-                       f"На Ваш баланс начислен бонус {1}!\n"
+                       f"На Ваш баланс начислен бонус {1}!\n" # TODO поработать с бонусами
                        f"Спасибо Вам!"
                 )
 
             await message.answer(
                 text=welcome_message,
-                reply_markup=get_main_menu_keyboard()
+                reply_markup=await get_main_menu_keyboard(user_tg_id)
             )
             return
 
@@ -63,7 +63,7 @@ async def process_start_command(
         )
         await message.answer(
             text=welcome_message,
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(user_tg_id)
         )
 
     elif response and response.get("success"):
@@ -75,13 +75,14 @@ async def process_start_command(
 
         await message.answer(
             text=welcome_message,
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(user_tg_id)
         )
     else:
         await message.answer(
             text="Добро пожаловать! Выберите необходимое действие:",
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(user_tg_id)
         )
+
 
 @router.message(Command("admin"), F.from_user.id.in_(settings.bot.admin_ids))
 async def process_admin_command(message: types.Message):
@@ -95,6 +96,6 @@ async def process_admin_command(message: types.Message):
 async def process_back_to_main(callback_query: types.CallbackQuery):
     await callback_query.message.edit_text(
         text="<b>Выберите действие:</b>",
-        reply_markup=get_main_menu_keyboard()
+        reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
     )
     await callback_query.answer()

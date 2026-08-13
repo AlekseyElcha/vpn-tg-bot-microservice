@@ -20,13 +20,13 @@ async def process_daily_challenge_btn_click(c: CallbackQuery):
             await c.message.answer(
                 text=f"<b>{server_response_msg}</b>",
                 parse_mode="HTML",
-                reply_markup=get_main_menu_keyboard(),
+                reply_markup=await get_main_menu_keyboard(user_tg_id),
                 message_effect_id="5046509860389126442"
             )
         else:
             await c.message.edit_text(
                 text=server_response_msg,
-                reply_markup=get_main_menu_keyboard(),
+                reply_markup=await get_main_menu_keyboard(user_tg_id),
             )
         await c.answer()
     except TelegramBadRequest as e:

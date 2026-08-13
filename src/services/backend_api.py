@@ -1,3 +1,4 @@
+import time
 from typing import Dict, Any, List, Optional
 import httpx
 
@@ -8,7 +9,8 @@ import os
 
 class BackendAPIClient:
     def __init__(self, base_url: str = None):
-        self.base_url = base_url or os.getenv("BACKEND_URL", "http://localhost:8000")
+        # self.base_url = base_url or os.getenv("BACKEND_URL", "http://localhost:8000")
+        self.base_url = base_url or os.getenv("BACKEND_URL", "backend:8000")
         self.headers = {
             "X-API-Key": settings.api_security.api_secret_key
         }
@@ -19,13 +21,12 @@ class BackendAPIClient:
     ) -> Optional[Any]:
         url = f"{self.base_url}{endpoint}"
         kwargs.setdefault("timeout", self.timeout)
-        
         async with httpx.AsyncClient(headers=self.headers) as client:
             try:
                 response = await client.request(method, url, **kwargs)
                 response.raise_for_status()
                 
-                if response.status_code in [200, 201]:
+                if response.status_code in [200, 201, 400]:
                     try:
                         return response.json()
                     except ValueError:
@@ -75,18 +76,21 @@ class BackendAPIClient:
 
     async def create_subscription(
         self, email: str, total_gb: int | float, expiry_time: int, tg_id: int, 
-        limit_ip: int, enable: bool, inbounds: list[int]
+        limit_ip: int, enable: bool, inbounds: list[int], is_trial: bool
     ) -> Optional[Dict[str, Any]]:
         json_data = {
-            "client": {
-                "email": email,
-                "total_gb": total_gb,
-                "expiry_time": expiry_time,
-                "tg_id": tg_id,
-                "limit_ip": limit_ip,
-                "enable": enable
+            "new_client": {
+                "client": {
+                    "email": email,
+                    "total_gb": total_gb,
+                    "expiry_time": expiry_time,
+                    "tg_id": tg_id,
+                    "limit_ip": limit_ip,
+                    "enable": enable
+                },
+                "inbound_ids": inbounds
             },
-            "inbound_ids": inbounds
+            "is_trial": is_trial
         }
         return await self._make_request("POST", "/clients/add", json=json_data)
 
@@ -155,5 +159,15 @@ class BackendAPIClient:
         if response:
             return response.get("msg")
         return None
+
+    async def check_trial_validity(self, tg_id: int) -> bool | None:
+        response = await self._make_request(method="GET", endpoint="/users/trial_validity", params={"tg_id": tg_id}, timeout=15.0)
+        if response:
+            return response.get("is_valid")
+        return None
+
+    # async def activate_trial_in_db(self, tg_id: int) -> bool | None:
+    #
+
 
 api_client = BackendAPIClient()

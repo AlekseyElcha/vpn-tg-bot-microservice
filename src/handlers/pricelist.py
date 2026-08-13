@@ -28,7 +28,7 @@ async def process_pricelist_btn_click(
 
         await callback_query.message.edit_text(
             text=price_info,
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
         await callback_query.answer()
     except TelegramBadRequest:

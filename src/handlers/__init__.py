@@ -11,6 +11,7 @@ from .messaging import router as message_router
 from .game import router as game_router
 # from .fiat_payment import router as fiat_payment_router
 from .payment.manage_payment import router as payment_router
+from .trial import router as trial_router
 
 main_router = Router()
 main_router.include_routers(
@@ -25,5 +26,6 @@ main_router.include_routers(
     message_router,
     # crypto_router,
     game_router,
+    trial_router,
     # fiat_payment_router,
 )

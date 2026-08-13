@@ -45,7 +45,7 @@ async def on_shutdown(dispatcher: Dispatcher):
 
 async def main():
     dp.include_router(main_router)
-    redis_pool = Redis.from_url("redis://localhost:6379", decode_responses=True)
+    redis_pool = Redis.from_url(f"redis://{settings.redis.host}:{settings.redis.port}", decode_responses=True)
     crypto_client = AioCryptoPay(token=CRYPTO_TOKEN, network=Networks.TEST_NET)
     dp.message.middleware(ThrottlingMiddleware(redis=redis_pool, rate_limit=settings.bot.limit_seconds))
     dp.callback_query.middleware(ThrottlingMiddleware(redis=redis_pool, rate_limit=settings.bot.limit_seconds))
