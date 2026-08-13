@@ -2,10 +2,15 @@ from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from src.config.settings import settings
+from src.logs import logger
+from src.services.backend_api import api_client
 
 
-def get_main_menu_keyboard():
+async def get_main_menu_keyboard(tg_id: int):
     builder = InlineKeyboardBuilder()
+    user_valid_for_trial = await api_client.check_trial_validity(tg_id=tg_id)
+    logger.info(user_valid_for_trial)
+
     builder.row(types.InlineKeyboardButton(text="Мои подписки 📋", callback_data="my_subs_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Баланс 💳", callback_data="my_balance_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Тарифы 🌟", callback_data="pricelist_btn_click"))
@@ -13,6 +18,9 @@ def get_main_menu_keyboard():
     builder.row(types.InlineKeyboardButton(text="Активировать промокод 💰", callback_data="promocode_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Реферальная система 🤝", callback_data="referrals_btn_click"))
     builder.row(types.InlineKeyboardButton(text="Ежедневный челлендж 🎯", callback_data="daily_challenge_btn_click"))
+    if user_valid_for_trial:
+        builder.row(types.InlineKeyboardButton(text="Пробный период! 🎁", callback_data="trial_btn_click"))
+
     return builder.as_markup()
 
 

@@ -75,8 +75,7 @@ async def process_pay_crypto_btn_click(
 
     pay_kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="💸 Оплатить в CryptoBot", url=payment_invoice.bot_invoice_url)],
-        [InlineKeyboardButton(text="🔄 Проверить оплату", callback_data=f"check_{payment_invoice.invoice_id}")],
-        [InlineKeyboardButton(text="⬅️ Вернуться в главное меню", callback_data=f"back_to_main")]
+        [InlineKeyboardButton(text="🔄 Проверить оплату", callback_data=f"check_{payment_invoice.invoice_id}")]
     ])
 
     await callback_query.message.answer(
@@ -290,7 +289,7 @@ async def check_payment_status(
             await callback_query.message.answer(
                 text=f"Баланс успешно пополнен на {int(invoice.amount)} RUB!",
                 message_effect_id="5046509860389126442",
-                reply_markup=get_main_menu_keyboard()
+                reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
             )
 
 

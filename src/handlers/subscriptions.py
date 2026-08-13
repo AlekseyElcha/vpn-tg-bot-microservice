@@ -1,3 +1,4 @@
+import time
 from time import time as unix_time
 
 from aiogram import Router, types, F
@@ -27,7 +28,7 @@ async def process_my_subs_btn_click(
         if subscriptions_info is None:
             await callback_query.message.edit_text(
                 "Не удалось получить список.",
-                reply_markup=get_main_menu_keyboard()
+                reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
             )
             await callback_query.answer()
             return
@@ -232,7 +233,7 @@ async def process_view_specific_sub(
     if not client_email_from_redis:
         await callback_query.message.answer(
             text="Произошла ошибка!",
-            reply_markup = get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
         return
 
@@ -244,7 +245,7 @@ async def process_view_specific_sub(
         if time_now - sub_created_at < 172800:
             await callback_query.message.edit_text(
                 text=f"<b>Подписку можно удалить не раньше чем через 48 часов после её создания!</b>",
-                reply_markup=get_main_menu_keyboard()
+                reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
             )
             await callback_query.answer()
             return
@@ -257,7 +258,7 @@ async def process_view_specific_sub(
 
     await callback_query.message.edit_text(
         text=f"Подписка успешно удалена!",
-        reply_markup=get_main_menu_keyboard()
+        reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
     )
 
     await redis.delete(f"sub:{sub_id}")
@@ -278,7 +279,7 @@ async def process_new_sub_btn_click_1(
     if user_balance is None:
         await callback_query.message.edit_text(
             text=f"Нам не удалось получить Ваш баланс, повторите попытку позже.",
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
         return
 
@@ -286,7 +287,7 @@ async def process_new_sub_btn_click_1(
         await callback_query.message.edit_text(
             text=f"На данный момент Ваш баланс: <b>{user_balance}</b>.\n\n"
                  f"<b>Для оформления подписки баланс должен быть больше 0.</b>",
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
         return
 
@@ -326,29 +327,30 @@ async def process_new_sub_btn_click_1(
     response = await api_client.create_subscription(
         email=subscription_name,
         total_gb=0,
-        expiry_time=0, # заменяется на бекенде, значение здесь ни на что не влияет
+        expiry_time=0,
         tg_id=tg_id,
         limit_ip=settings.vpn.limit_ip,
         enable=True,
-        inbounds=settings.vpn.inbounds
+        inbounds=settings.vpn.inbounds,
+        is_trial=False
     )
 
     if response and response.get("success") == True:
         await callback_query.message.edit_text(
             text=f"Новая подписка успешно создана!\n\n"
                  f"Скопировать подписку для настройки клиента Вы можете в меню «Мои подписки».",
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
     elif response and response.get("success") == False and response.get("msg"):
         await callback_query.message.edit_text(
             text=response.get("msg"),
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
 
     else:
         await callback_query.message.edit_text(
             text=f"Произошла непредвиденная ошибка при создании подписки.",
-            reply_markup=get_main_menu_keyboard()
+            reply_markup=await get_main_menu_keyboard(callback_query.from_user.id)
         )
 
     await callback_query.answer()

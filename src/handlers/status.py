@@ -86,7 +86,7 @@ async def process_balance_menu(callback_query: types.CallbackQuery):
 
     await callback_query.message.answer(
         text=server_info_text,
-        reply_markup=get_main_menu_keyboard(),
+        reply_markup=await get_main_menu_keyboard(callback_query.from_user.id),
         parse_mode="HTML"
     )
     await callback_query.answer()
